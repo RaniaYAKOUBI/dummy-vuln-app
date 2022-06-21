@@ -13,7 +13,7 @@ jobs:
   uses: sysdiglabs/scan-action@v3.4.0
   with: 
     # Tag of the image to analyse.
-    image-tag: "sysdiglabs/dummy-vuln-app:latest"
+    image-tag: "RaniaYAKOUBIs/dummy-vuln-app:latest"
     # API token for Sysdig Scanning auth.
     sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
     # Github App token to publish the checks. By default it will use "github.token value". See https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
