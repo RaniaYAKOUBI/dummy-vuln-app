@@ -1,0 +1,57 @@
+name: Build and scan Docker Image
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag RaniaYAKOUBI/dummy-vuln-app:latest
+    - name: Sysdig Secure Inline Scan
+  # You may pin to the exact commit or the version.
+  # uses: sysdiglabs/scan-action@0e483c3a8ed88a6d7394a1baaf0e432db09f240f
+  uses: sysdiglabs/scan-action@v3.4.0
+  with:
+    # Tag of the image to analyse.
+    image-tag: "RaniaYAKOUBI/dummy-vuln-app:latest"
+    # API token for Sysdig Scanning auth.
+    sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+    # Github App token to publish the checks. By default it will use "github.token value". See https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
+    github-token: # default is ${{ github.token }}
+    # Sysdig Secure URL (ex: "https://secure-sysdig.com").
+    sysdig-secure-url: # optional, default is https://secure.sysdig.com
+    # Skip TLS verification when calling secure endpoints.
+    sysdig-skip-tls: # optional
+    # Path to Dockerfile (ex: "./Dockerfile").
+    dockerfile-path: # optional
+    # Don't fail the execution of this action even if the scan result is FAILED.
+    ignore-failed-scan: # optional
+    # Report only once an issue with a specific package and its version. Default to false
+    unique-report-by-package: # optional
+    # If specified, where should we scan the image from. Possible values:
+      pull            Pull the image from the registry.
+                  Default if not specified.
+     docker-daemon   Get the image from the Docker daemon.
+                  The docker socket must be available at /var/run/docker.sock
+     cri-o           Get the image from containers-storage (CRI-O and others).
+                  Images must be stored in /var/lib/containers
+     docker-archive  Image is provided as a Docker .tar file (from docker save).
+                  Specify path to the tar file with 'input-path'
+     oci-archive     Image is provided as a OCI image tar file.
+                  Specify path to the tar file with 'input-path'
+     oci-dir         Image is provided as a OCI image, untared.
+                  Specify path to the directory file with 'input-path'
+
+    input-type: # default is pull
+    # Path to the tar file or OCI layout directory.
+    input-path: # optional
+    # Run the scan container with this username or UID.
+It might required if scanning from docker-daemon or cri-o to provide a user with permissions on the socket or storage.
+
+    run-as-user: # optional
+    # Additional parameters added to the secure-inline-scan container execution.
+    extra-parameters: # optional
+    # Additional parameters added to the docker command when executing the secure-inline-scan container execution.
+    extra-docker-parameters: # optional
+    # Filter output annotations by severity. Default is "unknown".
+    severity: # optional
